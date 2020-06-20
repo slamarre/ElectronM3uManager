@@ -1,0 +1,14 @@
+ //"eslintConfig": {
+    //    "plugins": ["example"],
+    //    "env": {
+    //        "example/custom": true
+    //    }
+    //},
+    
+    
+    
+     //,"share":"npm-run-all -parallel test start"
+     
+     
+     
+     "test": "nodeunit tests",

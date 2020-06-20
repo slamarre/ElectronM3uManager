@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <!--    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src *; script-src *; connect-src 'self'; img-src 'self'; style-src 'self';">-->
+
+    <title>Directory Sannner and File Management</title>
+    <style>
+        .m3ucontent{
+            color:darkgray;
+            font-size: 11px;
+        }
+        div{
+            color:darkgray;
+            font-size: 11px;
+        }
+        .red{
+            color: red;
+            font-size: 11px;
+        }
+        .green{
+            color:green;
+            font-size:11px;
+        }
+        span{
+            font-size: 10px;
+            color: darkgreen;
+            visibility: hidden;
+            display: none;
+        }
+        span::before{
+            /*content:"<br />";*/
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Directory Sannner and File Management</h2>
+    <input type="file" id="filelocation" />
+    <button id='btn'>click</button>
+    <p>path:
+        <script>
+            const fs = require('fs');
+
+            function lowercasethefile(path, filename) {
+                var fullpath = path + '/' + fileName;
+                //console.log(fullpath);
+                var fileName = filename;
+                var fileNewName = fileName.toString().toLowerCase();
+                if ((fileName.toString().toLowerCase().indexOf('.m3u') > -1 || fileName.toString().toLowerCase().indexOf('.mp3') > -1) &&
+                    (fileName != fileNewName)) {
+                    fs.renameSync(path + '/' + fileName, path + '/' + fileNewName)
+                    console.log('File named:' + fileName + " to " + fileNewName);
+                }
+            }
+
+            function createm3ufolder(path, filename) {
+                var fullpath = path + '/' + fileName;
+                if (fullpath.indexOf('.m3u') > -1) {
+                    var folder = fullpath.replace('.m3u', '');
+                    var filefound = fs.existsSync(folder);
+                    //console.log("found:"+filefound);
+                    if (filefound != true) {
+                        fs.mkdirSync(folder);
+                        console.log("Folder created:" + folder)
+                    }
+                }
+            }
+
+            function moveToM3uFolder(path, m3uFolder, filename) {
+                var fullpath = path + '/' + filename;
+                var fullpathNew = path + '/' + m3uFolder + '/' + filename;
+                console.log('path:' + path);
+                console.log('m3uFolder:' + m3uFolder);
+                console.log('filename:' + filename);
+                console.log('old:' + fullpath);
+                console.log('new:' + fullpathNew);
+
+                var oldpathfound = fs.existsSync(fullpath);
+
+                var newpathfound = fs.existsSync(fullpathNew);
+                if (oldpathfound === true && newpathfound == false) {
+
+                    fs.renameSync(fullpath, fullpathNew);
+                }
+            }
+
+            function getLastFolderName(path) {
+                if (path.indexOf('.') === -1) {
+                    return path.substr(path.lastIndexOf('/') + 1);
+                } else {
+                    return path.indexOf('');
+                }
+            }
+
+            function IsDirectory(filename) {
+                try {
+                    fs.lstatSync(filename).isDirectory()
+                } catch (e) {
+                    // Handle error
+                    if (e.code == 'ENOENT') {
+                        //no such file or directory
+                        //do something
+                        return false;
+                    } else {
+                        //do something else
+                        return true;
+                    }
+                }
+            }
+
+            function IsFile(filename) {
+                try {
+                    fs.lstatSync(filename).isDirectory()
+                } catch (e) {
+                    // Handle error
+                    if (e.code == 'ENOENT') {
+                        //no such file or directory
+                        //do something
+                        return false;
+                    } else {
+                        //do something else
+                        return false;
+                    }
+                }
+                return true;
+            }
+
+            function MeetsRules(theString) {
+                return (MeetsRule(theString) && MeetsRuleReg(theString))
+
+            }
+
+            function MeetsRule(theString) {
+                if (theString.indexOf('copy') > -1)
+                    return true;
+                else
+                    return false;
+            }
+
+            function MeetsRuleReg(theString) {
+                try {
+                    var reg = /\([0-9]\)/
+
+                    var found = theString.match(new RegExp(reg));
+                    console.log(found);
+                    if (found.length > 0)
+                        return true;
+                    else
+                        return false;
+                } catch (e) {
+                    return false;
+                }
+            }
+
+
+            console.log('start');
+            document.write('<form>')
+            document.write(process.cwd());
+            document.writeln("<br /><p class='m3ucontent'>");
+            var path = process.cwd();
+            var files = fs.readdirSync(path)
+            //console.log(files);
+            for (var i in files) {
+                var fileName = files[i];
+                var line = '';
+                var line0 = '';
+
+                var fullpath = path + '/' + fileName;
+
+                var eachFileInArray = path + '/' + files[i].trim();
+                eachFileInArray = fullpath;
+                if (IsFile(eachFileInArray) == true && MeetsRules(eachFileInArray)) {
+                    line = '<div class=red>(Y): ' + eachFileInArray + '</div>';
+                    line0 = '<input type=checkbox checked=checked />'
+                } else {
+                    line = '<div class=green>(N): ' + eachFileInArray + '</div>';
+                }
+                console.log(files[i]);
+
+
+                document.writeln(line0, line);
+
+
+            }
+
+            document.write('</form>')
+            document.write("</p>");
+            console.log('end');
+
+        </script>
+    </p>
+
+    We are using node <script>
+        document.write(process.versions.node);
+
+    </script>,
+    Chrome <script>
+        document.write(process.versions.chrome);
+
+    </script>,
+    and Electron <script>
+        document.write(process.versions.electron);
+
+    </script>.
+</body>
+
+</html>

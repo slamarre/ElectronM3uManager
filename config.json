@@ -1,0 +1,6 @@
+webPreferences: {
+    nodeIntegration: false,
+    nodeIntegrationInWorker: false,
+    preload: 'preload.js',
+    contextIsolation: true
+}

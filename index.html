@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+  <!--    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self';">
+<meta http-equiv="Content-Security-Policy" content="default-src *; script-src *; connect-src 'self'; img-src 'self'; style-src 'self';">-->
+
+    <title>M3U File Management</title>
+    <script src="react.development.js" crossorigin></script>
+    <script src="react-dom.development.js" crossorigin></script>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .m3ucontent{
+            color:darkgray;
+            font-size: 11px;
+        }
+        div{
+            color:darkgray;
+            font-size: 11px;
+        }
+        .red{
+            color: red;
+            font-size: 11px;
+        }
+        span{
+            font-size: 10px;
+            color: darkgreen;
+            visibility: hidden;
+            display: none;
+        }
+        span::before{
+            /*content:"<br />";*/
+        }
+        #footer{
+            font-size:8px;
+        }
+    </style>
+</head>
+
+<body id="theBody">
+  <form action="#" method="post" enctype="multipart/form-data">
+    <div id="wrapper">
+      <div id="side-nav" style="visibility: hidden;display: none;">
+        <ul>
+          <li>
+            <a href="#" id="home" class="nav">
+              <i class="fa fa-home"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="list" class="nav">
+              <i class="fa fa-list"></i>
+            </a>
+          </li>
+          <li>
+            <a href="#" id="search" class="nav">
+              <i class="fa fa-search"></i>
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div id="top-bar">
+      </div>
+      <div id="main">
+        <h1>Directory Scanner and File Management</h1>
+        <div>
+          <input type="text" placeholder="Filter Directory.." id="filterText" name="filterText" />
+          <span id="LastModifiedSpan"><label id="lastModifiedLabel">Last Modified: </label>
+            <input type="datetime" id="upDateText" readonly="true" /></span>
+        </div>
+        <div>
+          <input type="file" id="filelocation" webkitdirectory directory multiple />
+          <button id='btn' style="visibility: hidden">click</button><button id="resetBtn">Reset</button>
+        </div>
+        <div>
+          <input type="text" id="fileLocal" value="" placeholder="file location:" />
+          <span id="delimiterSlash">/</span>
+          <input type="text" id="newFolderText" value="" placeholder="Folder Name" /><button id="createFolderBtn">Create Folder</button>
+        </div>
+
+        <div id="directoryDiv">
+          <div>
+            <label id="labelPath">path:2</label> <span class="pathValue">1</span>
+          </div>
+          <div style="display: block;">
+            <input type="checkbox" id="directoryCheckBox" /><label>Hide Directories</label>
+          </div>
+          <div style="display: none;">
+            <input type="checkbox" id="" /><label>Exclude Directories</label>
+          </div>
+          <div style="display: none;">
+            <input type="checkbox" id="" /><label>Exclude Directories</label>
+          </div>
+
+          <p class='m3ucontent'>
+          </p>
+          <p id="fileContent" class="fileContent" style="">a
+          </p>
+        </div>
+
+      </div>
+      <div id="fileContentDiv">
+        <!--      <input type="hidden" id="hiddenVal" name="hiddenVal" value="0" />-->
+      </div>
+      <div id="moveDiv">
+        <button id="moveToButton" name="moveToButton">MoveTo</button>
+        <input type="text" id="MoveToText" value="" style="display: none;" />
+        <select id="directorySelect"></select>
+      </div>
+      <div class="slidecontainer" id="singleSlider">
+        <label id="output"></label> <label id="output2"></label>
+        <input type="range" min="0" max="100" value="0" class="slider" id="myRange"><br />
+        <input type=text id=demoText style="width: 400px" width="300" />
+        <input type=hidden id=demoTextHidden style="width: 400px" width="300" />
+      </div>
+      <div class="slidecontainer" id="doubleSlider">
+        <input type="range" min="0" max="100" value="0" class="slider2" id="myRange2">
+        <input type="range" min="0" max="100" value="0" class="slider2" id="myRange3">
+      </div>
+      
+
+      <div id="footer" class="footer Div">
+
+        Node path:<span id="nodeVersion"></span>
+        <script>
+            const fs = require('fs');
+            const EventEmitter = require('events');
+            var http = require('http');
+            var formidable = require('formidable');
+            var util =require('util');
+            console.log('yup0');
+            http.createServer(function(req, res) {
+              var form = new formidable.IncomingForm();
+              form.parse(req, function(err, fields, files) {
+                console.log('yup');
+                console.log(req.url );
+                res.writeHead(200, {'content-type': 'text/plain'});
+                res.write('received upload:\n\n');
+                res.end(util.inspect({fields: fields, files: files}));
+              });
+              res.writeHead(200, {'content-type': 'text/html'});
+              res.end('success');
+              form.on('end', function() {
+                console.log('ended');
+              });
+
+              console.log('yup2');
+              return;
+
+            }).listen(8080);
+
+
+            class MyEmitter extends EventEmitter {}
+
+            const myEmitter = new MyEmitter();
+            myEmitter.on('event', (a, b) => {
+                setImmediate(() => {
+                    console.log('this happens asynchronously');
+                });
+            });
+            myEmitter.emit('event', 'a', 'b');
+
+            function lowercasethefile(path, filename) {
+                var fullpath = path + '/' + fileName;
+                //console.log(fullpath);
+                var fileName = filename;
+                var fileNewName = fileName.toString().toLowerCase();
+                if ((fileName.toString().toLowerCase().indexOf('.m3u') > -1 || fileName.toString().toLowerCase().indexOf('.mp3') > -1) &&
+                    (fileName != fileNewName)) {
+                    fs.renameSync(path + '/' + fileName, path + '/' + fileNewName)
+                    console.log('File named:' + fileName + " to " + fileNewName);
+                }
+            }
+
+            function createm3ufolder(path, filename) {
+                var fullpath = path + '/' + fileName;
+                //if (fullpath.indexOf('.m3u') > -1) {
+                var folder = fullpath.replace('.m3u', '');
+                var filefound = fs.existsSync(folder);
+                //console.log("found:"+filefound);
+                if (filefound != true) {
+                    fs.mkdirSync(folder);
+                    console.log("Folder created:" + folder)
+                }
+                //}
+            }
+
+            function moveToM3uFolder(path, m3uFolder, filename) {
+                var fullpath = path + '/' + filename;
+                var fullpathNew = path + '/' + m3uFolder + '/' + filename;
+                console.log('path:' + path);
+                console.log('m3uFolder:' + m3uFolder);
+                console.log('filename:' + filename);
+                console.log('old:' + fullpath);
+                console.log('new:' + fullpathNew);
+
+                var oldpathfound = fs.existsSync(fullpath);
+
+                var newpathfound = fs.existsSync(fullpathNew);
+                var directoryPath = fs.existsSync(path + '/' + m3uFolder);
+                if (oldpathfound === true && newpathfound == false && directoryPath == true) {
+
+                    fs.renameSync(fullpath, fullpathNew);
+                }
+            }
+
+            function getLastFolderName(path) {
+                if (path.indexOf('.') === -1) {
+                    return path.substr(path.lastIndexOf('/') + 1);
+                } else {
+                    return path.indexOf('');
+                }
+            }
+
+            function isM3UFile(filename) {
+                if (filename.indexOf('.m3u') > -1) {
+                    return true;
+                } else return false;
+            }
+
+            function treatm3uFile(m3ufile, m3ufolder) {
+                var fileContent = fs.readFileSync(fullpath).toString().trim().split('\n');
+                if (fileContent[fileContent.length - 1] == '') {
+                    fileContent = fileContent.splice(0, fileContent.length - 1);
+                }
+                for (var i in fileContent) {
+                    var eachFileInArray = path + '/' + fileContent[i].toLowerCase().trim();
+                    var line = '';
+                    if (fs.existsSync(eachFileInArray) == true) {
+                        //m3uFolder = m3uFolder;// + '/' + fileContent[i].toLowerCase().trim();
+                        line = '<div class=red>(Y): ' + eachFileInArray + '<span>' + getLastFolderName(m3uFolder) + '</span></div>';
+                        //console.log(fileContent[i]);
+                        //m3uFolder = getLastFolderName(m3uFolder).toString();
+                        moveToM3uFolder(path, m3uFolder, fileContent[i].toString().toLowerCase().trim());
+
+                    } else {
+                        line = '<div>(N): ' + eachFileInArray + '</div>';
+
+                    }
+                    document.writeln(line);
+                }
+                //console.log("m3u:" + fullpath);
+                //console.log("m3u:" + m3uFile);
+                moveToM3uFolder(path, m3uFolder, m3uFile);
+                //console.log("filecontent:");
+                document.write("</p>");
+            }
+
+            function DoThis() {
+                alert('Go');
+            }
+
+            function ProcessDirectory() {
+
+                var files = fs.readdirSync(path)
+                //console.log(files);
+                for (var i in files) {
+                    var fileName = files[i];
+                    var m3uFolder = '';
+                    var m3uFile = '';
+
+                    var fullpath = path + '/' + fileName;
+
+                    if (isM3UFile(fullpath)) {
+
+                        m3uFile = fileName;
+                        m3uFolder = fullpath.replace('.m3u', '');
+                        m3uFolder = getLastFolderName(m3uFolder);
+                        //console.log(':::' + getLastFolderName(m3uFolder))
+                        createm3ufolder(path, m3uFile);
+                        treatm3uFile(m3uFile, m3uFolder);
+
+                        //console.log('Reading Files')
+
+
+                        //console.log(fileContent);
+                    }
+                    //document.writeln(fullpath);
+                    //console.log(path + files[i]);
+                }
+            }
+            console.log('start');
+            document.write(process.cwd());
+            //document.writeln("<br /><p class='m3ucontent'>");
+            var path = process.cwd();
+            var files = fs.readdirSync(path)
+            //console.log(files);
+            for (var i in files) {
+                var fileName = files[i];
+                var m3uFolder = '';
+                var m3uFile = '';
+
+                var fullpath = path + '/' + fileName;
+
+                if (isM3UFile(fullpath)) {
+
+                    m3uFile = fileName;
+                    m3uFolder = fullpath.replace('.m3u', '');
+                    m3uFolder = getLastFolderName(m3uFolder);
+                    //console.log(':::' + getLastFolderName(m3uFolder))
+                    createm3ufolder(path, m3uFile);
+                    treatm3uFile(m3uFile, m3uFolder);
+                    //console.log('Reading Files')
+
+                    //console.log(fileContent);
+                }
+                //document.writeln(fullpath);
+                //console.log(path + files[i]);
+            }
+
+            console.log('end');
+            let jump = document.querySelector('.btn');
+            //            jump.on('click', () => {                alert('clicked');    })
+
+        </script>
+    
+    <script>
+         document.write(Notification.isSupported());
+
+    </script>
+    <div class="footer">
+        We are using node <script>
+            document.write(process.versions.node);
+
+        </script>,
+        Chrome <script>
+            document.write(process.versions.chrome);
+
+        </script>,
+        and Electron <script>
+            document.write(process.versions.electron);
+
+        </script>.</div>
+</body>
+</html>
