@@ -1,9 +1,9 @@
 {
-  "name": "electronm3umanager",
-  "version": "1.0.0",
-  "description": "will review the m3u files and organize the directories",
-  "main": "index.js",
-  "scripts": {
+    "name": "electronm3umanager",
+    "version": "1.0.0",
+    "description": "will review the m3u files and organize the directories",
+    "main": "index.js",
+    "scripts": {
         "test": "mocha --reporter progress buildScripts/testSetup.js \"*.test.js\"",
         "prestart": "node prestart.js",
         "elect": "electron .",
@@ -19,9 +19,9 @@
         "build": "babel-node buildScripts/build.js",
         "postbuild": "babel-node buildScripts/distServer.js",
         "deploy": "surge ./dist"
-  },
-  "author": "S Lamarre",
-  "license": "ISC"
+    },
+    "author": "S Lamarre",
+    "license": "ISC",
     "devDependencies": {
         "babel-cli": "^6.26.0",
         "babel-core": "6.17.0",
@@ -75,5 +75,5 @@
         "should": "^13.2.3",
         "underscore": "^1.9.1",
         "whatwg-fetch": "^3.0.0"
-    },
+    }
 }
