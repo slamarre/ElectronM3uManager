@@ -4,7 +4,7 @@
     "description": "will review the m3u files and organize the directories",
     "main": "index.js",
     "scripts": {
-        "test": "mocha --reporter progress buildScripts/testSetup.js \"*.test.js\"",
+        "test": "mocha --reporter progress buildScripts/testSetup.js \"./tests/*.test.js\"",
         "prestart": "node prestart.js",
         "elect": "electron .",
         "start": "npm-run-all --parallel elect lint:watch test:watch",
